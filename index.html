@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>東京アクア 空きレーン</title>
+<style>
+  :root{
+    --bg:#eef2f6; --card:#fff; --ink:#1a2733; --sub:#6b7a89; --line:#e3e9ef;
+    --brand:#0f7b6c; --open:#127a3e; --openbg:#e7f6ec; --openbd:#bfe6cb;
+    --full:#c0392b; --fullbg:#fdecec; --fullbd:#f3c9c6;
+    --na:#8a97a3; --nabg:#f2f5f8; --nabd:#e1e8ee; --sel:#2f6fb5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    -webkit-text-size-adjust:100%;}
+  .wrap{max-width:560px;margin:0 auto;padding:12px 12px 40px;}
+  header{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:6px 2px 10px;}
+  .htxt .sys{color:var(--brand);font-size:12px;font-weight:700;letter-spacing:.02em;}
+  .htxt h1{margin:2px 0 0;font-size:24px;font-weight:800;letter-spacing:.01em;}
+  .resv{flex:none;border:1px solid var(--line);background:var(--card);border-radius:12px;
+    padding:10px 12px;font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
+    box-shadow:0 1px 2px rgba(20,40,60,.05);white-space:nowrap;}
+  .nav{display:flex;align-items:center;gap:8px;margin:4px 0 2px;}
+  .nav button{border:1px solid var(--line);background:var(--card);border-radius:12px;
+    padding:12px 14px;font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;
+    box-shadow:0 1px 2px rgba(20,40,60,.05);min-width:44px;}
+  .nav button:disabled{color:#c2ccd6;background:#f5f8fb;cursor:default;}
+  .nav .range{margin-left:auto;font-size:20px;font-weight:800;}
+  .upd{color:var(--sub);font-size:12px;margin:6px 2px 12px;}
+  .pool{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 14px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(20,40,60,.05);}
+  .pool .ptitle{display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px;}
+  .pool .pname{font-size:22px;font-weight:800;}
+  .pool .psub{color:var(--sub);font-size:13px;}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+  .cell{border-radius:12px;border:1.5px solid var(--nabd);background:var(--nabg);
+    padding:8px 2px 10px;text-align:center;cursor:pointer;user-select:none;}
+  .cell .d{font-size:13px;font-weight:700;line-height:1.15;}
+  .cell .w{font-size:11px;color:var(--sub);}
+  .cell .st{margin-top:8px;font-size:20px;font-weight:800;line-height:1;}
+  .cell .lb{margin-top:3px;font-size:11px;font-weight:700;}
+  .cell.sat .w{color:#2f6fb5}.cell.sun .w{color:#c0392b}
+  .cell.open{background:var(--openbg);border-color:var(--openbd);}
+  .cell.open .st,.cell.open .lb{color:var(--open);}
+  .cell.full{background:var(--fullbg);border-color:var(--fullbd);}
+  .cell.full .st,.cell.full .lb{color:var(--full);}
+  .cell.na .st,.cell.na .lb{color:var(--na);}
+  .cell.sel{outline:3px solid var(--sel);outline-offset:1px;}
+  .detail{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:14px 16px 18px;box-shadow:0 1px 3px rgba(20,40,60,.05);}
+  .detail h2{margin:0 0 12px;font-size:20px;font-weight:800;}
+  .slots{display:flex;flex-wrap:wrap;gap:8px;}
+  .slot{border:1px solid var(--openbd);background:var(--openbg);color:var(--open);
+    border-radius:10px;padding:10px 14px;font-size:15px;font-weight:800;}
+  .msg{color:var(--sub);font-size:14px;font-weight:600;}
+  .msg.full{color:var(--full);}
+  .foot{margin-top:18px;color:var(--sub);font-size:11px;line-height:1.6;text-align:center;}
+  .foot a{color:var(--sub);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="htxt">
+      <div class="sys">東京都スポーツ施設予約システム</div>
+      <h1>東京アクア 空きレーン</h1>
+    </div>
+    <a class="resv" href="https://sports.tef.or.jp/" target="_blank" rel="noopener">予約サイト</a>
+  </header>
+
+  <div class="nav">
+    <button id="prev" title="前の週">‹</button>
+    <button id="first" title="最初へ">最初</button>
+    <button id="next" title="次の週">›</button>
+    <button id="reload" title="再読み込み">更新</button>
+    <span class="range" id="range">—</span>
+  </div>
+  <div class="upd">更新 <span id="lastupd">—</span></div>
+
+  <div id="pools"></div>
+  <div class="detail" id="detail">
+    <h2 id="dtitle">日付を選んでください</h2>
+    <div id="dbody" class="msg">プールの各日をタップすると、その日の空き時間帯が表示されます。</div>
+  </div>
+
+  <div class="foot">
+    データ出典：東京都スポーツ施設予約システム（空き状況照会）。<br>
+    ○＝空きあり／×＝空きなし／−＝受付期間外。実際の予約は<a href="https://sports.tef.or.jp/" target="_blank" rel="noopener">予約サイト</a>で。
+  </div>
+</div>
+
+<script>
+// ===DATA-START (GitHub Actions が自動生成。手で編集しない) ===
+const LAST_UPDATED = "2026/7/2 22:54";
+const DATA = {
+ "main": {
+  "2026-07-02": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-03": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-04": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-05": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-06": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-07": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-08": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-09": {
+   "day": "open",
+   "slots": {
+    "11": "o",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-10": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-11": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-12": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-13": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-14": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-15": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-16": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-17": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-18": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-19": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-20": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-21": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-22": {
+   "day": "open",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "o"
+   }
+  },
+  "2026-07-23": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-24": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-25": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-26": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-27": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "x",
+    "9": "x"
+   }
+  },
+  "2026-07-28": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-29": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  }
+ },
+ "sub": {
+  "2026-07-02": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-03": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-04": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-05": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-06": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-07": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-08": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-09": {
+   "day": "open",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "o",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "o"
+   }
+  },
+  "2026-07-10": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-11": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-12": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-13": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-14": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-15": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-16": {
+   "day": "open",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "o",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-17": {
+   "day": "open",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "o",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-18": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-19": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-20": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  },
+  "2026-07-21": {
+   "day": "na",
+   "slots": {
+    "11": "-",
+    "13": "-",
+    "15": "-",
+    "17": "-",
+    "19": "-",
+    "8": "-",
+    "9": "-"
+   }
+  },
+  "2026-07-22": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-23": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-24": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-25": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-26": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-27": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-28": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "o",
+    "9": "x"
+   }
+  },
+  "2026-07-29": {
+   "day": "full",
+   "slots": {
+    "11": "x",
+    "13": "x",
+    "15": "x",
+    "17": "x",
+    "19": "x",
+    "8": "-",
+    "9": "x"
+   }
+  }
+ }
+};
+// ===DATA-END===
+
+const POOLS = [
+  {key:"main", name:"メイン", sub:"メインプール５０ｍ"},
+  {key:"sub",  name:"サブ",  sub:"サブプール２５ｍ"},
+];
+const WD = ["日","月","火","水","木","金","土"];
+const SLOT_ORDER = ["8","9","11","13","15","17","19"];
+
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function parseISO(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
+
+// 全データの日付範囲を取得
+function allDates(){
+  const set=new Set();
+  POOLS.forEach(p=>Object.keys(DATA[p.key]||{}).forEach(k=>set.add(k)));
+  return [...set].sort();
+}
+
+const dates = allDates();
+const startDate = dates.length ? parseISO(dates[0]) : new Date();
+const endDate   = dates.length ? parseISO(dates[dates.length-1]) : new Date();
+
+// 週（7日窓）を start から生成
+const weeks = [];
+for(let d=new Date(startDate); d<=endDate; d.setDate(d.getDate()+7)){
+  const w=[];
+  for(let i=0;i<7;i++){const c=new Date(d);c.setDate(d.getDate()+i);w.push(new Date(c));}
+  weeks.push(w);
+}
+
+// 既定週：na 以外（open/full）を最初に含む週
+function firstMeaningfulWeek(){
+  for(let i=0;i<weeks.length;i++){
+    if(weeks[i].some(dt=>{
+      const k=ymd(dt);
+      return POOLS.some(p=>{const e=DATA[p.key]?.[k];return e&&e.day!=="na";});
+    })) return i;
+  }
+  return 0;
+}
+
+let wi = firstMeaningfulWeek();
+let sel = null; // {pool, date}
+
+function cellState(poolKey, k){
+  const e = DATA[poolKey]?.[k];
+  if(!e) return {cls:"na", st:"−", lb:"受付前", day:"na"};
+  if(e.day==="open") return {cls:"open", st:"○", lb:"空き", day:"open"};
+  if(e.day==="full") return {cls:"full", st:"×", lb:"なし", day:"full"};
+  return {cls:"na", st:"−", lb:"受付前", day:"na"};
+}
+
+function renderNav(){
+  document.getElementById("prev").disabled = wi<=0;
+  document.getElementById("first").disabled = wi<=0;
+  document.getElementById("next").disabled = wi>=weeks.length-1;
+  const w=weeks[wi]||[];
+  if(w.length){
+    const a=w[0], b=w[6];
+    document.getElementById("range").textContent =
+      (a.getMonth()+1)+"/"+a.getDate()+" - "+(b.getMonth()+1)+"/"+b.getDate();
+  }
+  document.getElementById("lastupd").textContent = LAST_UPDATED;
+}
+
+function renderPools(){
+  const box=document.getElementById("pools");
+  box.innerHTML="";
+  const w=weeks[wi]||[];
+  POOLS.forEach(p=>{
+    const card=document.createElement("div");card.className="pool";
+    card.innerHTML=`<div class="ptitle"><span class="pname">${p.name}</span><span class="psub">${p.sub}</span></div>`;
+    const days=document.createElement("div");days.className="days";
+    w.forEach(dt=>{
+      const k=ymd(dt);
+      const s=cellState(p.key,k);
+      const dow=dt.getDay();
+      const cell=document.createElement("div");
+      cell.className="cell "+s.cls+(dow===0?" sun":dow===6?" sat":"");
+      if(sel&&sel.pool===p.key&&sel.date===k) cell.className+=" sel";
+      cell.innerHTML=`<div class="d">${dt.getMonth()+1}/${dt.getDate()}</div>`+
+                     `<div class="w">${WD[dow]}</div>`+
+                     `<div class="st">${s.st}</div><div class="lb">${s.lb}</div>`;
+      cell.addEventListener("click",()=>{sel={pool:p.key,date:k};render();});
+      days.appendChild(cell);
+    });
+    card.appendChild(days);
+    box.appendChild(card);
+  });
+}
+
+function renderDetail(){
+  const t=document.getElementById("dtitle");
+  const b=document.getElementById("dbody");
+  if(!sel){t.textContent="日付を選んでください";
+    b.className="msg";b.textContent="プールの各日をタップすると、その日の空き時間帯が表示されます。";return;}
+  const pool=POOLS.find(p=>p.key===sel.pool);
+  const dt=parseISO(sel.date);
+  t.textContent=`${dt.getMonth()+1}/${dt.getDate()}（${WD[dt.getDay()]}）${pool.name}`;
+  const e=DATA[sel.pool]?.[sel.date];
+  if(!e||e.day==="na"){b.className="msg";b.textContent="受付期間外（まだ予約受付が始まっていません）。";return;}
+  if(e.day==="full"){b.className="msg full";b.textContent="この日は空きレーンがありません（全て貸切）。";return;}
+  const open=SLOT_ORDER.filter(h=>e.slots?.[h]==="o");
+  if(!open.length){b.className="msg full";b.textContent="この日は空きレーンがありません。";return;}
+  b.className="";
+  b.innerHTML=`<div class="slots">`+open.map(h=>`<span class="slot">${h}時〜</span>`).join("")+`</div>`;
+}
+
+function render(){renderNav();renderPools();renderDetail();}
+
+document.getElementById("prev").onclick=()=>{if(wi>0){wi--;render();}};
+document.getElementById("next").onclick=()=>{if(wi<weeks.length-1){wi++;render();}};
+document.getElementById("first").onclick=()=>{wi=0;render();};
+document.getElementById("reload").onclick=()=>location.reload();
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+name: update-availability
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # 6時間毎（UTC）。空き状況の変動を拾う
+  workflow_dispatch:         # 手動実行
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-availability
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Scrape availability
+        run: python scraper.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --staged --quiet || git commit -m "auto: update availability ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git push
