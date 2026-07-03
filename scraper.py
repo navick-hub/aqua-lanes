@@ -52,8 +52,9 @@ JST = datetime.timezone(datetime.timedelta(hours=9))
 HERE = os.path.dirname(os.path.abspath(__file__))
 INDEX = os.path.join(HERE, "index.html")
 
-# 取得する日数（本日から）
-DAYS_AHEAD = 28
+# 取得する日数（本日から）。予約受付は概ね2ヶ月先まで開くため約2ヶ月分を取得。
+# 受付期間外の日は自動的に「−受付前」表示になる。
+DAYS_AHEAD = 62
 # リクエスト間の待機（秒）
 SLEEP = 0.3
 
