@@ -186,11 +186,14 @@ def fetch_day(cli, year, month, day):
 
 
 def day_status(slots):
-    """その日のロールアップ。時間帯(9〜19)に○が1つでもあれば open、×があれば full、無ければ na。"""
-    core = [slots.get(h) for h in ("9", "11", "13", "15", "17", "19")]
-    if "o" in core:
+    """その日のロールアップ。全時間帯(8〜19)のいずれかに○があれば open、×があれば full、無ければ na。
+
+    注意: 8時枠だけ空く日（例: 早朝のみ空き）があるため、8時も必ず判定に含める。
+    """
+    vals = list(slots.values())
+    if "o" in vals:
         return "open"
-    if "x" in core:
+    if "x" in vals:
         return "full"
     return "na"
 
