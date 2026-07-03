@@ -3699,8 +3699,10 @@ function renderDetail(){
     // 善行：専用利用（貸切）の日別ステータスをラベル表示
     if(!e){b.className="msg";b.textContent="この日の情報はありません。";return;}
     const s=e.status;
-    if(s==="open"){b.className="";b.innerHTML=`<div class="slots"><span class="slot">${e.label||"空きあり"}</span></div>`
-        +`<div class="msg" style="margin-top:10px">屋内プールの専用利用（貸切）に空きがあります。予約サイトで確認・申込を。</div>`;return;}
+    if(s==="open"){b.className="";
+        b.innerHTML=`<div class="slots"><span class="slot"></span></div>`
+        +`<div class="msg" style="margin-top:10px">屋内プールの専用利用（貸切）に空きがあります。予約サイトで確認・申込を。</div>`;
+        b.querySelector(".slot").textContent=e.label||"空きあり";return;}
     if(s==="lottery"){b.className="msg";b.style.color="#7b4bb5";b.textContent=`${e.label}（抽選期間）。予約サイトから抽選申込ができます。`;return;}
     if(s==="full"){b.className="msg full";b.textContent="この日は専用利用（貸切）に空きがありません。";return;}
     if(s==="closed"){b.className="msg";b.textContent=`${e.label}。`;return;}
