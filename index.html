@@ -70,15 +70,14 @@
   .msg.full{color:var(--full);}
   .foot{margin-top:18px;color:var(--sub);font-size:11px;line-height:1.6;text-align:center;}
   .foot a{color:var(--sub);}
-  .rulebox{background:var(--card);border:1px solid var(--line);border-radius:16px;
-    box-shadow:0 1px 3px rgba(20,40,60,.05);margin:-4px 0 14px;overflow:hidden;}
-  .rulehead{display:flex;align-items:center;justify-content:space-between;
-    padding:12px 15px;cursor:pointer;user-select:none;font-size:14px;font-weight:800;color:var(--ink);}
-  .rulehead .chev{color:var(--sub);transition:transform .2s;}
-  .rulebox.open .rulehead .chev{transform:rotate(180deg);}
-  .rulebody{display:none;padding:2px 15px 14px;font-size:13px;line-height:1.6;color:var(--ink);
-    border-top:1px solid var(--line);}
-  .rulebox.open .rulebody{display:block;}
+  .rulewrap{margin:-2px 2px 12px;}
+  .rulelink{display:inline-flex;align-items:center;gap:4px;color:var(--sel);
+    font-size:13px;font-weight:700;cursor:pointer;user-select:none;}
+  .rulelink .chev{font-size:11px;transition:transform .2s;}
+  .rulewrap.open .rulelink .chev{transform:rotate(180deg);}
+  .rulebody{display:none;margin-top:8px;padding:12px 14px;font-size:13px;line-height:1.6;
+    color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;}
+  .rulewrap.open .rulebody{display:block;}
   .rulebody .step{display:flex;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);}
   .rulebody .step:last-of-type{border-bottom:none;}
   .rulebody .step b{color:var(--brand);min-width:5em;font-weight:800;}
@@ -3645,6 +3644,24 @@ function renderPools(){
       gh.innerHTML=`<span class="gname">${p.group}</span>`+
         (p.groupHref?`<a href="${p.groupHref}" target="_blank" rel="noopener">予約サイト</a>`:"");
       box.appendChild(gh);
+      // 善行グループの見出し直下に「貸切の受付ルール」小さな青リンク（タップで開閉）
+      if(p.kind==="kanagawa"){
+        const rw=document.createElement("div");
+        rw.className="rulewrap"+(ruleOpen?" open":"");
+        rw.innerHTML=
+          `<span class="rulelink">🏊 貸切（専用利用）の受付ルール <span class="chev">▾</span></span>`+
+          `<div class="rulebody">`+
+            `<div class="step"><b>抽選申込</b><span>利用日の2ヶ月前の 1日〜10日</span></div>`+
+            `<div class="step"><b>抽選</b><span>利用日の2ヶ月前の 11日</span></div>`+
+            `<div class="step"><b>先着申込</b><span>利用日の2ヶ月前の 16日〜</span></div>`+
+            `<div class="ex">例）9月利用 → 7/1〜抽選申込、7/11抽選、<b>7/16〜先着</b>。<br>`+
+            `※個人で泳ぐ「一般開放」は予約不要です（この表は貸切枠の状況）。</div>`+
+          `</div>`;
+        rw.querySelector(".rulelink").addEventListener("click",()=>{
+          ruleOpen=!ruleOpen; rw.classList.toggle("open", ruleOpen);
+        });
+        box.appendChild(rw);
+      }
     }
     const card=document.createElement("div");card.className="pool";
     card.innerHTML=`<div class="ptitle"><span class="pname">${p.name}</span><span class="psub">${p.sub}</span></div>`;
@@ -3664,25 +3681,6 @@ function renderPools(){
     });
     card.appendChild(days);
     box.appendChild(card);
-
-    // 善行カードの下に「貸切の受付ルール」開閉パネル
-    if(p.key==="zengyo"){
-      const rb=document.createElement("div");
-      rb.className="rulebox"+(ruleOpen?" open":"");
-      rb.innerHTML=
-        `<div class="rulehead"><span>🏊 貸切（専用利用）の受付ルール</span><span class="chev">▾</span></div>`+
-        `<div class="rulebody">`+
-          `<div class="step"><b>抽選申込</b><span>利用日の2ヶ月前の 1日〜10日</span></div>`+
-          `<div class="step"><b>抽選</b><span>利用日の2ヶ月前の 11日</span></div>`+
-          `<div class="step"><b>先着申込</b><span>利用日の2ヶ月前の 16日〜</span></div>`+
-          `<div class="ex">例）9月利用 → 7/1〜抽選申込、7/11抽選、<b>7/16〜先着</b>。<br>`+
-          `※個人で泳ぐ「一般開放」は予約不要です（この表は貸切枠の状況）。</div>`+
-        `</div>`;
-      rb.querySelector(".rulehead").addEventListener("click",()=>{
-        ruleOpen=!ruleOpen; rb.classList.toggle("open", ruleOpen);
-      });
-      box.appendChild(rb);
-    }
   });
 }
 
