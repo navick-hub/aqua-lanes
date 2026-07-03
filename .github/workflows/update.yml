@@ -2,7 +2,7 @@ name: update-availability
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # 6時間毎（UTC）。空き状況の変動を拾う
+    - cron: '0 */3 * * *'   # 3時間毎（UTC）。空き状況の変動を拾う
   workflow_dispatch:         # 手動実行
 
 permissions:
