@@ -48,7 +48,18 @@
   .cell.full{background:var(--fullbg);border-color:var(--fullbd);}
   .cell.full .st,.cell.full .lb{color:var(--full);}
   .cell.na .st,.cell.na .lb{color:var(--na);}
+  .cell.ippan{background:#eef4fd;border-color:#c4dbf5;}
+  .cell.ippan .st,.cell.ippan .lb{color:#2f6fb5;}
+  .cell.lottery{background:#f3eefb;border-color:#dcccf0;}
+  .cell.lottery .st,.cell.lottery .lb{color:#7b4bb5;}
+  .cell.closed{background:#f2f5f8;border-color:#e1e8ee;}
+  .cell.closed .st,.cell.closed .lb{color:#8a97a3;}
   .cell.sel{outline:3px solid var(--sel);outline-offset:1px;}
+  .ghead{display:flex;align-items:baseline;justify-content:space-between;
+    margin:2px 2px 8px;padding-top:6px;}
+  .ghead .gname{font-size:15px;font-weight:800;color:var(--ink);}
+  .ghead a{font-size:12px;font-weight:700;color:var(--sub);text-decoration:none;
+    border:1px solid var(--line);border-radius:10px;padding:5px 9px;background:var(--card);}
   .detail{background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:14px 16px 18px;box-shadow:0 1px 3px rgba(20,40,60,.05);}
   .detail h2{margin:0 0 12px;font-size:20px;font-weight:800;}
@@ -65,10 +76,9 @@
 <div class="wrap">
   <header>
     <div class="htxt">
-      <div class="sys">東京都スポーツ施設予約システム</div>
-      <h1>東京アクア 空きレーン</h1>
+      <div class="sys">東京都・神奈川県 スポーツ施設予約</div>
+      <h1>プール 空きレーン</h1>
     </div>
-    <a class="resv" href="https://sports.tef.or.jp/" target="_blank" rel="noopener">予約サイト</a>
   </header>
 
   <div class="nav">
@@ -87,14 +97,15 @@
   </div>
 
   <div class="foot">
-    データ出典：東京都スポーツ施設予約システム（空き状況照会）。<br>
-    ○＝空きあり／×＝空きなし／−＝受付期間外。実際の予約は<a href="https://sports.tef.or.jp/" target="_blank" rel="noopener">予約サイト</a>で。
+    データ出典：東京都スポーツ施設予約システム／神奈川県e-kanagawa施設予約（各空き状況照会）。<br>
+    ○＝空きあり／×＝空きなし／開＝一般開放／抽＝抽選／休＝休館／−＝受付期間外。<br>
+    善行は「屋内プールの専用利用（貸切）」の状況です（個人利用の一般開放とは別枠）。実際の予約は各予約サイトで。
   </div>
 </div>
 
 <script>
 // ===DATA-START (GitHub Actions が自動生成。手で編集しない) ===
-const LAST_UPDATED = "2026/7/3 10:20";
+const LAST_UPDATED = "2026/7/3 17:50";
 const DATA = {
  "main": {
   "2026-07-03": {
@@ -3027,16 +3038,522 @@ const DATA = {
     "9": "-"
    }
   }
+ },
+ "zengyo": {
+  "2026-07-03": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-04": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-05": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-06": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-07-07": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-08": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-09": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-10": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-11": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-12": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-13": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-07-14": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-15": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-16": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-17": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-18": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-19": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-20": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-21": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-07-22": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-23": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-24": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-25": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-26": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-27": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-07-28": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-29": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-30": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-07-31": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-08-01": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-08-02": {
+   "label": "受付終了",
+   "status": "na"
+  },
+  "2026-08-03": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-08-04": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-05": {
+   "label": "空き状況あり",
+   "status": "open"
+  },
+  "2026-08-06": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-07": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-08": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-09": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-10": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-08-11": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-12": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-13": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-14": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-15": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-16": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-17": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-18": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-19": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-20": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-21": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-22": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-23": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-24": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-08-25": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-26": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-27": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-28": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-29": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-30": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-08-31": {
+   "label": "空きなし",
+   "status": "full"
+  },
+  "2026-09-01": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-02": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-03": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-04": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-05": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-06": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-07": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-09-08": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-09": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-10": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-11": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-12": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-13": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-14": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-09-15": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-16": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-17": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-18": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-19": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-20": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-21": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-22": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-23": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-24": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-09-25": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-26": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-27": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-28": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-09-29": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-09-30": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-01": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-02": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-03": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-04": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-05": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-10-06": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-07": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-08": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-09": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-10": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-11": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-12": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-13": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-10-14": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-15": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-16": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-17": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-18": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-19": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-10-20": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-21": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-22": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-23": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-24": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-25": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-26": {
+   "label": "休館日",
+   "status": "closed"
+  },
+  "2026-10-27": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-28": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-29": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-30": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-10-31": {
+   "label": "受付前",
+   "status": "na"
+  },
+  "2026-11-01": {
+   "label": "受付前",
+   "status": "na"
+  }
  }
 };
 // ===DATA-END===
 
 const POOLS = [
-  {key:"main", name:"メイン", sub:"メインプール５０ｍ"},
-  {key:"sub",  name:"サブ",  sub:"サブプール２５ｍ"},
+  {key:"main", group:"東京アクアティクスセンター", groupHref:"https://sports.tef.or.jp/",
+   name:"メイン", sub:"メインプール５０ｍ", kind:"tokyo"},
+  {key:"sub",  group:"東京アクアティクスセンター", groupHref:"https://sports.tef.or.jp/",
+   name:"サブ",  sub:"サブプール２５ｍ", kind:"tokyo"},
+  {key:"zengyo", group:"神奈川県立スポーツセンター（善行）",
+   groupHref:"https://s-yoyaku.e-kanagawa.lg.jp/kanagawa/FacilityAvailability/Index/140007/0021?ptn=1",
+   name:"屋内プール", sub:"専用利用（貸切）", kind:"kanagawa"},
 ];
+const KIND = {}; POOLS.forEach(p=>KIND[p.key]=p.kind);
 const WD = ["日","月","火","水","木","金","土"];
 const SLOT_ORDER = ["8","9","11","13","15","17","19"];
+
+// 善行(e-kanagawa)の status → 表示
+const EK_DISP = {
+  open:   {cls:"open",    st:"○", lb:"空き"},
+  ippan:  {cls:"ippan",   st:"開", lb:"一般開放"},
+  full:   {cls:"full",    st:"×", lb:"なし"},
+  lottery:{cls:"lottery", st:"抽", lb:"抽選"},
+  closed: {cls:"closed",  st:"休", lb:"休館"},
+  na:     {cls:"na",      st:"−", lb:"受付前"},
+};
 
 function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
 function parseISO(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d);}
@@ -3060,27 +3577,34 @@ for(let d=new Date(startDate); d<=endDate; d.setDate(d.getDate()+7)){
   weeks.push(w);
 }
 
-// 既定週：na 以外（open/full）を最初に含む週
+// 既定週：意味のある空き情報（na以外）を最初に含む週
 function firstMeaningfulWeek(){
   for(let i=0;i<weeks.length;i++){
     if(weeks[i].some(dt=>{
       const k=ymd(dt);
-      return POOLS.some(p=>{const e=DATA[p.key]?.[k];return e&&e.day!=="na";});
+      return POOLS.some(p=>cellState(p.key,k).meaningful);
     })) return i;
   }
   return 0;
 }
 
-let wi = firstMeaningfulWeek();
-let sel = null; // {pool, date}
-
 function cellState(poolKey, k){
   const e = DATA[poolKey]?.[k];
-  if(!e) return {cls:"na", st:"−", lb:"受付前", day:"na"};
-  if(e.day==="open") return {cls:"open", st:"○", lb:"空き", day:"open"};
-  if(e.day==="full") return {cls:"full", st:"×", lb:"なし", day:"full"};
-  return {cls:"na", st:"−", lb:"受付前", day:"na"};
+  if(KIND[poolKey]==="kanagawa"){
+    if(!e) return {cls:"na", st:"−", lb:"−", meaningful:false};
+    const d = EK_DISP[e.status] || EK_DISP.na;
+    let lb = d.lb;
+    if(e.status==="na") lb = (e.label||"").includes("終了") ? "終了" : (e.label||"").includes("公開前") ? "公開前" : "受付前";
+    return {cls:d.cls, st:d.st, lb, meaningful:["open","full","ippan","lottery"].includes(e.status)};
+  }
+  if(!e) return {cls:"na", st:"−", lb:"受付前", meaningful:false};
+  if(e.day==="open") return {cls:"open", st:"○", lb:"空き", meaningful:true};
+  if(e.day==="full") return {cls:"full", st:"×", lb:"なし", meaningful:true};
+  return {cls:"na", st:"−", lb:"受付前", meaningful:false};
 }
+
+let wi = firstMeaningfulWeek();
+let sel = null; // {pool, date}
 
 function renderNav(){
   document.getElementById("prev").disabled = wi<=0;
@@ -3099,7 +3623,15 @@ function renderPools(){
   const box=document.getElementById("pools");
   box.innerHTML="";
   const w=weeks[wi]||[];
+  let curGroup=null;
   POOLS.forEach(p=>{
+    if(p.group!==curGroup){
+      curGroup=p.group;
+      const gh=document.createElement("div");gh.className="ghead";
+      gh.innerHTML=`<span class="gname">${p.group}</span>`+
+        (p.groupHref?`<a href="${p.groupHref}" target="_blank" rel="noopener">予約サイト</a>`:"");
+      box.appendChild(gh);
+    }
     const card=document.createElement("div");card.className="pool";
     card.innerHTML=`<div class="ptitle"><span class="pname">${p.name}</span><span class="psub">${p.sub}</span></div>`;
     const days=document.createElement("div");days.className="days";
@@ -3124,12 +3656,27 @@ function renderPools(){
 function renderDetail(){
   const t=document.getElementById("dtitle");
   const b=document.getElementById("dbody");
+  b.style.color="";
   if(!sel){t.textContent="日付を選んでください";
     b.className="msg";b.textContent="プールの各日をタップすると、その日の空き時間帯が表示されます。";return;}
   const pool=POOLS.find(p=>p.key===sel.pool);
   const dt=parseISO(sel.date);
   t.textContent=`${dt.getMonth()+1}/${dt.getDate()}（${WD[dt.getDay()]}）${pool.name}`;
   const e=DATA[sel.pool]?.[sel.date];
+
+  if(KIND[sel.pool]==="kanagawa"){
+    // 善行：専用利用（貸切）の日別ステータスをラベル表示
+    if(!e){b.className="msg";b.textContent="この日の情報はありません。";return;}
+    const s=e.status;
+    if(s==="open"){b.className="";b.innerHTML=`<div class="slots"><span class="slot">${e.label||"空きあり"}</span></div>`
+        +`<div class="msg" style="margin-top:10px">屋内プールの専用利用（貸切）に空きがあります。予約サイトで確認・申込を。</div>`;return;}
+    if(s==="lottery"){b.className="msg";b.style.color="#7b4bb5";b.textContent=`${e.label}（抽選期間）。予約サイトから抽選申込ができます。`;return;}
+    if(s==="full"){b.className="msg full";b.textContent="この日は専用利用（貸切）に空きがありません。";return;}
+    if(s==="closed"){b.className="msg";b.textContent=`${e.label}。`;return;}
+    b.className="msg";b.textContent=`${e.label}（貸切の受付が始まっていません）。専用利用は利用日の2ヶ月前から受付。`;return;
+  }
+
+  // 東京：時間帯別
   if(!e||e.day==="na"){b.className="msg";b.textContent="受付期間外（まだ予約受付が始まっていません）。";return;}
   if(e.day==="full"){b.className="msg full";b.textContent="この日は空きレーンがありません（全て貸切）。";return;}
   const open=SLOT_ORDER.filter(h=>e.slots?.[h]==="o");

@@ -198,6 +198,75 @@ def day_status(slots):
     return "na"
 
 
+# ============================================================
+# 善行（アサンテ スポーツパーク＝神奈川県立スポーツセンター）
+# 神奈川県 e-kanagawa 施設予約サービス。ログイン/トークン不要、
+# セッションCookieのみでJSON APIから空きが取れる（東京とは別系統・通常TLS）。
+# ============================================================
+
+EK_BASE = "https://s-yoyaku.e-kanagawa.lg.jp/kanagawa"
+EK_LGC = "140007"          # 自治体コード（神奈川県）
+EK_FC = "0021"             # 施設コード（アサンテ スポーツパーク）
+EK_POOL_ROOM = "013"       # 室場コード（屋内プール専用利用）
+
+# statusType → (正規化ステータス, 日本語ラベル)。マスタは予約サイトのIndex HTMLより。
+EK_STATUS = {
+    "A01": ("open", "空きあり"),
+    "A02": ("open", "空き状況あり"),
+    "A03": ("open", "電話受付"),
+    "U10": ("open", "窓口受付"),
+    "U08": ("ippan", "一般開放"),
+    "L01": ("lottery", "抽選申込可"),
+    "L02": ("lottery", "抽選申込可"),
+    "L03": ("lottery", "抽選待ち"),
+    "R03": ("full", "空きなし"),
+    "U01": ("closed", "休館日"),
+    "U07": ("closed", "利用不可"),
+    "U09": ("closed", "設備保守"),
+    "U02": ("na", "公開前"),
+    "U03": ("na", "受付前"),
+    "U04": ("na", "公開終了"),
+    "U05": ("na", "受付終了"),
+}
+
+
+def scrape_zengyo():
+    """善行プールの日別空き状況を e-kanagawa の JSON API から取得。"""
+    s = requests.Session()
+    s.headers.update({"User-Agent": UA})
+    # セッションCookie確立
+    s.get(f"{EK_BASE}/FacilitySearch/Index", timeout=30)
+
+    today = datetime.datetime.now(JST).date()
+    end = today + datetime.timedelta(days=DAYS_AHEAD - 1)
+    body = {
+        "startDate": today.isoformat(),
+        "endDate": end.isoformat(),
+        "roomCode": EK_POOL_ROOM,
+        "toggleTimeType": False,
+        "period": DAYS_AHEAD,
+    }
+    r = s.post(
+        f"{EK_BASE}/FacilityAvailability/GetCalendar/{EK_LGC}/{EK_FC}",
+        json=body,
+        headers={"Accept": "application/json"},
+        timeout=30,
+    )
+    r.raise_for_status()
+    day_books = r.json().get("dayBooks", [])
+
+    out = {}
+    for db in day_books:
+        iso = db.get("usageDate", "")[:10]
+        st = db.get("statusType", "")
+        if not iso:
+            continue
+        status, label = EK_STATUS.get(st, ("na", st or "不明"))
+        out[iso] = {"status": status, "label": label}
+    print(f"[zengyo] 屋内プール専用利用 ... {len(out)}/{DAYS_AHEAD} days fetched")
+    return out
+
+
 def scrape():
     cli = Client()
     setup_session(cli)
@@ -256,13 +325,20 @@ def extract_existing(html):
 def main():
     data = scrape()
 
+    # 善行（e-kanagawa）。失敗しても東京側は出す。
+    try:
+        data["zengyo"] = scrape_zengyo()
+    except Exception as e:
+        print(f"[zengyo] error: {e}")
+        data["zengyo"] = {}
+
     # 施設単位で空なら既存値を温存（一時的な障害でデータを消さない）
     existing = {}
     if os.path.exists(INDEX):
         with open(INDEX, encoding="utf-8") as f:
             html = f.read()
         existing = extract_existing(html)
-    for key in ("main", "sub"):
+    for key in ("main", "sub", "zengyo"):
         if not data.get(key):
             data[key] = existing.get(key, {})
             print(f"  keep existing {key} ({len(data[key])} days)")
